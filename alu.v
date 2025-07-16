@@ -24,27 +24,36 @@ module Alu (
 
 	// Bloco always para a lógica combinacional da ALU
 	always @(*) begin
-		ALU_RD_o = 32'bX;
+		ALU_RD_o = 32'bx;
 
 		case (ALU_OP_i)
 			AND:             ALU_RD_o = ALU_RS1_i & ALU_RS2_i;
 			OR:              ALU_RD_o = ALU_RS1_i | ALU_RS2_i;
+			NOR:             ALU_RD_o =  ~(ALU_RS1_i | ALU_RS2_i);
+			
 			SUM:             ALU_RD_o = ALU_RS1_i + ALU_RS2_i;
 			SUB:             ALU_RD_o = ALU_RS1_i - ALU_RS2_i;
-			GREATER_EQUAL:   ALU_RD_o = ($signed(ALU_RS1_i) >= $signed(ALU_RS2_i)) ? 32'd1 : 32'd0;
-	        GREATER_EQUAL_U: ALU_RD_o = (ALU_RS1_i >= ALU_RS2_i) ? 32'd1 : 32'd0;
-			SLT:             ALU_RD_o = ($signed(ALU_RS1_i) < $signed(ALU_RS2_i)) ? 32'd1 : 32'd0;
-			SLT_U:           ALU_RD_o = (ALU_RS1_i < ALU_RS2_i) ? 32'd1 : 32'd0;
-			SHIFT_LEFT:      ALU_RD_o = ALU_RS1_i << ALU_RS2_i; 
-			SHIFT_RIGHT:     ALU_RD_o = ALU_RS1_i >> ALU_RS2_i;
-			SHIFT_RIGHT_A:   ALU_RD_o = $signed(ALU_RS1_i) >>> ALU_RS2_i;
 			XOR:             ALU_RD_o =  ALU_RS1_i ^ ALU_RS2_i;
-			NOR:             ALU_RD_o =  ~(ALU_RS1_i | ALU_RS2_i);
+
+
 			EQUAL:           ALU_RD_o = (ALU_RS1_i == ALU_RS2_i) ? 32'd1 : 32'd0;
-			default:         ALU_RD_o = 32'bX;
+			
+			GREATER_EQUAL:   ALU_RD_o = ($signed(ALU_RS1_i) >= $signed(ALU_RS2_i)) ? 32'd1 : 32'd0;			
+			SLT:             ALU_RD_o = ($signed(ALU_RS1_i) <  $signed(ALU_RS2_i)) ? 32'd1 : 32'd0;
+			
+	        GREATER_EQUAL_U: ALU_RD_o = (ALU_RS1_i >= ALU_RS2_i) ? 32'd1 : 32'd0;
+	        SLT_U:           ALU_RD_o = (ALU_RS1_i < ALU_RS2_i) ? 32'd1 : 32'd0;
+
+			SHIFT_LEFT:      ALU_RD_o = ALU_RS1_i << ALU_RS2_i[4:0]; 
+			SHIFT_RIGHT:     ALU_RD_o = ALU_RS1_i >> ALU_RS2_i[4:0];
+			SHIFT_RIGHT_A:   ALU_RD_o = $signed(ALU_RS1_i) >>> ALU_RS2_i[4:0];
+
+
+			default:         ALU_RD_o = 32'bx;
 		endcase
 	end
 
-	assign ALU_ZR_o = (ALU_RD_o == 32'd0) ? 1'b1 : 1'b0;
+	
+	assign ALU_ZR_o = (ALU_RD_o == 32'd0);
 	
 endmodule
